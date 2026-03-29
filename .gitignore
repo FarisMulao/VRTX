@@ -37,5 +37,46 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
+
+# Project/Build specific
+.vs/
+out/
+build/
+build_test/
+vendor/
+bin/
+obj/
+x64/
+x86/
+ARM/
+ARM64/
+Debug/
+Release/
+
+# Visual Studio files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+CMakeSettings.json
+cmake_install.cmake
+Makefile
+
+# Temporary/Antigravity files
+.gemini/
+.idea/
+.vscode/
+*.log
+*.tmp
+/tmp/
+
+# OS specific
+.DS_Store
+Thumbs.db
+Desktop.ini
