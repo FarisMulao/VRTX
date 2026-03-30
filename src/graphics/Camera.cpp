@@ -33,7 +33,7 @@ void Camera::ProcessMouseLook(float dx, float dy) {
   m_pitch -= dy * m_lookSensitivity;
 
   // Clamp pitch to avoid gimbal lock
-  const float maxPitch = 1.5f; 
+  const float maxPitch = 1.5f;
   if (m_pitch > maxPitch)
     m_pitch = maxPitch;
   if (m_pitch < -maxPitch)
@@ -75,6 +75,4 @@ void Camera::ProcessMovement(float dt, bool fwd, bool back, bool left,
   m_target += move;
 }
 
-void Camera::Update(float dt) {
-
-}
+void Camera::Update(float dt) {}

@@ -2,7 +2,7 @@
 #include <cstdint>
 
 struct Constraint {
-    uint32_t bodyA, bodyB;
-    float restLength;
-    uint32_t active;
+  uint32_t bodyA, bodyB;
+  float restLength;
+  uint32_t active;
 };
