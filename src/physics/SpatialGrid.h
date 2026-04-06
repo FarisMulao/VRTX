@@ -10,6 +10,14 @@ public:
   SpatialGrid(float cellSize = 1.0f)
       : m_cellSize(cellSize), m_invCellSize(1.0f / cellSize) {}
 
+  // Allow reassigning cell size (used when orb radii change)
+  SpatialGrid &operator=(const SpatialGrid &other) {
+    m_cellSize = other.m_cellSize;
+    m_invCellSize = other.m_invCellSize;
+    m_cells = other.m_cells;
+    return *this;
+  }
+
   void Clear() { m_cells.clear(); }
 
   void Insert(uint32_t index, Vec3 pos) {

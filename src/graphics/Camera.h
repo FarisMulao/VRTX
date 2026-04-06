@@ -27,7 +27,7 @@ public:
   float m_zf = 1000.0f;
 
   // Free cam state
-  bool m_freeCam = false;
+  bool m_freeCam = true;
   float m_yaw = 0.0f;   // Radians, around Y
   float m_pitch = 0.0f; // Radians, around X
   float m_moveSpeed = 15.0f;

@@ -19,6 +19,7 @@ private:
   void Update();
   void Render();
   void CalculateFPS();
+  void OnResize(int w, int h);
 
   std::unique_ptr<Window> m_window;
   std::shared_ptr<D3D12Context> m_d3dContext;
@@ -27,11 +28,23 @@ private:
   PhysicsWorld m_physicsWorld;
 
   bool m_isRunning;
-  int m_bondStartOrb = -1;
+
+  int m_bondSourceOrb = -1;
+  int m_hoveredOrb = -1;
+
+  int m_unbindSourceOrb = -1;
+  float m_grabDepth = 5.0f;
+
+  // Resize pending
+  bool m_resizePending = false;
+  int m_pendingWidth = 0;
+  int m_pendingHeight = 0;
 
   // UI state
   int m_spawnCount = 100;
   int m_selectedContainer = 0;
+  float m_spawnRadius = 0.3f;
+  float m_spawnMass = 1.0f;
 
   std::chrono::high_resolution_clock::time_point m_lastTime;
   std::chrono::high_resolution_clock::time_point m_fpsTime;

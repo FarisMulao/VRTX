@@ -12,35 +12,45 @@ public:
   ~PhysicsWorld();
 
   void Update(float dt);
-  void SpawnOrb(Vec3 pos, float radius = 0.3f);
+  void SpawnOrb(Vec3 pos, float radius, float mass);
 
-  // Ray picking: returns index of nearest hit orb, or -1
   int RayPick(Vec3 rayOrigin, Vec3 rayDir) const;
+
+  static void MassToColor(float mass, float minMass, float maxMass, float &r,
+                          float &g, float &b);
 
   std::vector<VerletBody> m_bodies;
   std::vector<Constraint> m_constraints;
 
   Vec3 m_gravity = Vec3(0.0f, -9.8f, 0.0f);
+  bool m_gravityEnabled = true;
 
-  // Container settings
   ContainerType m_containerType = ContainerType::Sphere;
-  float m_containerRadius = 10.0f;   // For sphere
-  float m_containerHalfSize = 10.0f; // For cube (half-extent)
+  float m_containerRadius = 10.0f;
+  float m_containerHalfSize = 10.0f;
   Vec3 m_containerCenter = Vec3(0.0f, 0.0f, 0.0f);
 
-  // Pause state and bonds
   bool m_isPaused = false;
   enum class BondType { Tether, Rod };
   BondType m_bondType = BondType::Tether;
 
-  // Grabbed orb
   int m_grabbedOrb = -1;
   Vec3 m_grabTarget;
 
+  float m_minMass = 1.0f;
+  float m_maxMass = 1.0f;
+
 private:
   SpatialGrid m_grid;
-  std::vector<uint32_t> m_neighborBuf; // Reusable buffer to avoid allocs
+  float m_maxRadius = 0.3f;
+  std::vector<uint32_t> m_neighborBuf;
 
+  // Fixed timestep accumulator
+  float m_accumulator = 0.0f;
+  static constexpr float FIXED_DT = 1.0f / 120.0f;
+
+  void StepFixed(float fixedDt);
   void SolveCollisionsSpatial();
   void ApplyContainerBounds(VerletBody &body);
+  void UpdateGridCellSize();
 };

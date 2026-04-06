@@ -3,9 +3,11 @@
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 
+static Window *s_windowInstance = nullptr;
+
 Window::Window(int width, int height, const std::string &title)
     : m_width(width), m_height(height), m_hwnd(nullptr) {
-  const char *CLASS_NAME = "OrbLabWindowClass";
+  const char *CLASS_NAME = "VRTXWindowClass";
 
   WNDCLASSA wc = {};
   wc.lpfnWndProc = WindowProc;
@@ -15,23 +17,22 @@ Window::Window(int width, int height, const std::string &title)
   RegisterClassA(&wc);
 
   DWORD style = WS_OVERLAPPEDWINDOW;
-  RECT rect;
-  rect.left = 0;
-  rect.top = 0;
-  rect.right = width;
-  rect.bottom = height;
-  AdjustWindowRect(&rect, style, FALSE);
+  RECT rect = {0, 0, width, height};
+  AdjustWindowRectEx(&rect, style, FALSE, 0);
 
   m_hwnd = CreateWindowExA(0, CLASS_NAME, title.c_str(), style, CW_USEDEFAULT,
                            CW_USEDEFAULT, rect.right - rect.left,
                            rect.bottom - rect.top, nullptr, nullptr,
                            wc.hInstance, nullptr);
 
+  s_windowInstance = this;
+
   ShowWindow(m_hwnd, SW_SHOW);
   UpdateWindow(m_hwnd);
 }
 
 Window::~Window() {
+  s_windowInstance = nullptr;
   if (m_hwnd) {
     DestroyWindow(m_hwnd);
   }
@@ -68,11 +69,24 @@ LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam,
     PostQuitMessage(0);
     return 0;
 
+  case WM_SIZE: {
+    if (s_windowInstance && wParam != SIZE_MINIMIZED) {
+      int newW = (int)LOWORD(lParam);
+      int newH = (int)HIWORD(lParam);
+      if (newW > 0 && newH > 0) {
+        s_windowInstance->m_width = newW;
+        s_windowInstance->m_height = newH;
+        if (s_windowInstance->m_resizeCallback) {
+          s_windowInstance->m_resizeCallback(newW, newH);
+        }
+      }
+    }
+  } break;
+
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
     Input::SetKeyDown((int)wParam, true);
     break;
-
   case WM_KEYUP:
   case WM_SYSKEYUP:
     Input::SetKeyDown((int)wParam, false);
